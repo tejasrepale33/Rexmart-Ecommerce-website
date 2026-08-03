@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rexmart – Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --green:#1db954;--green-dark:#158a3e;--green-light:#4ade80;
+  --gold:#c9a84c;--gold-light:#f5d67a;
+  --surface:#f7fdf9;--surface2:#edf7f1;
+  --glass:rgba(29,185,84,0.06);--glass-border:rgba(29,185,84,0.18);
+  --text:#0a1f0f;--muted:#4a7a5a;
+}
+body{
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(29,185,84,0.20) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(201,168,76,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 10%, rgba(29,185,84,0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 10% 80%, rgba(201,168,76,0.12) 0%, transparent 40%),
+    #f0fdf4;
+  background-attachment:fixed;
+  font-family:'Inter',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+}
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid rgba(29,185,84,0.15);
+  padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;
+  box-shadow:0 2px 16px rgba(29,185,84,0.08),inset 0 1px 0 rgba(255,255,255,0.90);
+}
+.nav-logo{
+  font-family:'Cinzel',serif;font-size:22px;
+  background:linear-gradient(135deg,var(--green-dark),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:3px;
+}
+.nav-links{display:flex;gap:8px;align-items:center;}
+.nav-btn{
+  padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;text-decoration:none;border:none;font-family:'Inter',sans-serif;
+}
+.nav-btn-ghost{
+  background:rgba(255,255,255,0.50);
+  color:var(--muted);
+  border:1px solid rgba(29,185,84,0.20);
+  backdrop-filter:blur(10px);
+}
+.nav-btn-ghost:hover{color:var(--text);border-color:var(--green);background:rgba(255,255,255,0.70);}
+.nav-btn-green{
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;
+  box-shadow:0 2px 12px rgba(29,185,84,0.30),inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.nav-btn-green:hover{box-shadow:0 4px 16px rgba(29,185,84,0.40);}
+.cart-count{
+  background:var(--gold);color:#fff;border-radius:50%;
+  width:18px;height:18px;font-size:10px;
+  display:inline-flex;align-items:center;justify-content:center;margin-left:4px;
+}
+.hero{
+  height:320px;
+  background:
+    linear-gradient(rgba(240,253,244,0.30),rgba(240,253,244,0.50)),
+    url('https://images.unsplash.com/photo-1557821552-17105176677c?w=1400&q=80') center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;
+}
+.hero h1{
+  font-family:'Cinzel',serif;font-size:42px;
+  background:linear-gradient(135deg,var(--green-dark),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;
+  text-shadow:0 2px 20px rgba(255,255,255,0.5);
+}
+.hero p{color:var(--text);font-size:16px;margin-bottom:24px;font-weight:500;}
+.controls{padding:28px 32px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.search-box{flex:1;min-width:220px;position:relative;}
+.search-box input{
+  width:100%;padding:11px 16px 11px 42px;
+  background:rgba(255,255,255,0.70);
+  border:1px solid rgba(29,185,84,0.20);
+  border-radius:12px;color:var(--text);font-size:14px;
+  font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;
+  backdrop-filter:blur(10px);
+  box-shadow:0 2px 8px rgba(29,185,84,0.06),inset 0 1px 0 rgba(255,255,255,0.80);
+}
+.search-box input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(29,185,84,0.10),inset 0 1px 0 rgba(255,255,255,0.80);}
+.search-box input::placeholder{color:var(--muted);}
+.search-box::before{content:'🔍';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;}
+.filter-btn{
+  padding:11px 18px;border-radius:12px;
+  border:1px solid rgba(29,185,84,0.20);
+  background:rgba(255,255,255,0.60);
+  color:var(--muted);font-size:13px;cursor:pointer;transition:all 0.2s;
+  font-family:'Inter',sans-serif;
+  backdrop-filter:blur(10px);
+  box-shadow:0 1px 4px rgba(29,185,84,0.06),inset 0 1px 0 rgba(255,255,255,0.80);
+}
+.filter-btn:hover,.filter-btn.active{
+  border-color:var(--green);color:var(--green-dark);
+  background:rgba(29,185,84,0.10);
+}
+.price-inputs{display:flex;gap:8px;align-items:center;}
+.price-inputs input{
+  width:90px;padding:10px 12px;
+  background:rgba(255,255,255,0.70);
+  border:1px solid rgba(29,185,84,0.20);
+  border-radius:10px;color:var(--text);font-size:13px;
+  font-family:'Inter',sans-serif;outline:none;
+  backdrop-filter:blur(10px);
+}
+.price-inputs input:focus{border-color:var(--gold);}
+.price-inputs input::placeholder{color:var(--muted);}
+.price-inputs span{color:var(--muted);font-size:13px;}
+.section{padding:0 32px 40px;}
+.section-title{
+  font-size:13px;font-weight:600;color:var(--gold);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+
+/* ── LIQUID GLASS CARDS ── */
+.card{
+  background:rgba(255,255,255,0.50);
+  border:1px solid rgba(255,255,255,0.75);
+  border-radius:18px;
+  transition:all 0.3s;cursor:pointer;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:
+    0 4px 24px rgba(29,185,84,0.10),
+    inset 0 1.5px 0 rgba(255,255,255,0.85),
+    inset 0 -1px 0 rgba(255,255,255,0.20);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;
+  top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,0.30) 50%,transparent);
+  transform:skewX(-15deg);pointer-events:none;z-index:1;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(29,185,84,0.35);
+  box-shadow:
+    0 16px 40px rgba(29,185,84,0.18),
+    inset 0 1.5px 0 rgba(255,255,255,0.90),
+    inset 0 -1px 0 rgba(255,255,255,0.30);
+}
+.card-img{width:100%;height:180px;object-fit:contain;background:var(--surface2);padding:8px;}
+.card-img-placeholder{
+  width:100%;height:180px;
+  background:linear-gradient(135deg,rgba(29,185,84,0.10),rgba(201,168,76,0.10));
+  display:flex;align-items:center;justify-content:center;font-size:48px;
+}
+.card-body{padding:16px;position:relative;z-index:2;}
+.card-cat{font-size:11px;color:var(--green-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.card-name{font-size:15px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
+.card-price{font-size:20px;font-weight:700;color:var(--gold);margin-bottom:4px;}
+.card-stock{font-size:12px;margin-bottom:12px;}
+.in-stock{color:var(--green);}
+.out-stock{color:#e74c3c;}
+.stars{color:var(--gold);font-size:13px;margin-bottom:10px;}
+.card-actions{display:flex;gap:8px;}
+.btn-cart{
+  flex:1;padding:9px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;
+  font-family:'Inter',sans-serif;
+  box-shadow:0 2px 8px rgba(29,185,84,0.25),inset 0 1px 0 rgba(255,255,255,0.20);
+}
+.btn-cart:hover{
+  background:linear-gradient(135deg,var(--green),var(--gold));
+  box-shadow:0 4px 14px rgba(29,185,84,0.35);
+}
+.btn-cart:disabled{background:#ccc;color:#999;cursor:not-allowed;box-shadow:none;}
+.btn-wish{
+  width:38px;height:38px;
+  border:1px solid rgba(201,168,76,0.30);
+  border-radius:10px;
+  background:rgba(255,255,255,0.50);
+  color:var(--muted);cursor:pointer;font-size:16px;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.btn-wish:hover,.btn-wish.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.10);}
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:rgba(255,255,255,0.85);
+  border:1px solid var(--green);color:var(--text);
+  padding:14px 20px;border-radius:12px;font-size:14px;z-index:999;
+  transform:translateY(80px);opacity:0;transition:all 0.3s;
+  box-shadow:0 4px 20px rgba(29,185,84,0.15);
+  backdrop-filter:blur(12px);
+}
+.toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">👑 REXMART</div>
+  <div class="nav-links">
+    <span id="welcome" style="color:var(--muted);font-size:13px;margin-right:8px;"></span>
+    <a href="customer-orders.html" class="nav-btn nav-btn-ghost">My Orders</a>
+    <a href="customer-wishlist.html" class="nav-btn nav-btn-ghost">❤️ Wishlist</a>
+    <a href="customer-cart.html" class="nav-btn nav-btn-green">🛒 Cart <span class="cart-count" id="cart-count">0</span></a>
+    <button class="nav-btn nav-btn-ghost" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Shop Like a King 👑</h1>
+  <p>Discover premium products curated just for you</p>
+</div>
+
+<div class="controls">
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search products..." oninput="handleSearch()"/>
+  </div>
+  <button class="filter-btn active" onclick="filterCat('',this)">All</button>
+  <button class="filter-btn" onclick="filterCat('Electronics',this)">Electronics</button>
+  <button class="filter-btn" onclick="filterCat('Clothing',this)">Clothing</button>
+  <button class="filter-btn" onclick="filterCat('Food',this)">Food</button>
+  <button class="filter-btn" onclick="filterCat('Books',this)">Books</button>
+  <div class="price-inputs">
+    <span style="color:var(--muted);font-size:12px;">₹</span>
+    <input type="number" id="min-price" placeholder="Min" oninput="filterPrice()"/>
+    <span style="color:var(--muted);">–</span>
+    <input type="number" id="max-price" placeholder="Max" oninput="filterPrice()"/>
+  </div>
+  <button class="filter-btn" onclick="toggleStock(this)" id="stock-btn">In Stock Only</button>
+</div>
+
+<div class="section">
+  <div class="section-title">Products</div>
+  <div class="grid" id="product-grid">
+    <div class="empty"><div class="empty-icon">⏳</div><p>Loading products...</p></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:8080/api';
+// Global fetch interceptor to append JWT Bearer token
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options) {
+    options = options || {};
+    options.headers = options.headers || {};
+    const token = localStorage.getItem('jwtToken');
+    if (token && !url.includes('/api/auth/login') && !url.includes('/api/auth/register')) {
+      options.headers['Authorization'] = 'Bearer ' + token;
+    }
+    return originalFetch(url, options);
+  };
+})();
+let allProducts = [];
+let customerId = localStorage.getItem('customerId');
+let cartId = null;
+let stockOnly = false;
+
+// Configure navigation dynamically based on login status (Guest mode support)
+window.addEventListener('DOMContentLoaded', () => {
+  const welcomeSpan = document.getElementById('welcome');
+  const navLinks = document.querySelector('.nav-links');
+  const customerName = localStorage.getItem('customerName');
+  
+  if (customerId) {
+    welcomeSpan.textContent = customerName ? `Hello, ${customerName} 👋` : 'Hello 👋';
+    loadCartCount();
+  } else {
+    navLinks.innerHTML = `
+      <span id="welcome" style="color:var(--muted);font-size:13px;margin-right:8px;">Hello, Guest 👋</span>
+      <a href="customer-login.html" class="nav-btn nav-btn-ghost">My Orders</a>
+      <a href="customer-login.html" class="nav-btn nav-btn-ghost">❤️ Wishlist</a>
+      <a href="customer-login.html" class="nav-btn nav-btn-green">🛒 Cart</a>
+      <button class="nav-btn nav-btn-ghost" onclick="window.location.href='customer-login.html'">Login</button>
+    `;
+  }
+});
+
+async function loadCartCount() {
+  if (!customerId) return;
+  try {
+    const res = await fetch(`${API}/cart/customer/${customerId}`, {
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken') }
+    });
+    if (res.ok) {
+      const cart = await res.json();
+      cartId = cart.id;
+      document.getElementById('cart-count').textContent = cart.cartItems ? cart.cartItems.length : 0;
+    }
+  } catch(e) {}
+}
+
+async function loadProducts() {
+  try {
+    const res = await fetch(`${API}/products`);
+    allProducts = await res.json();
+    renderProducts(allProducts);
+  } catch(e) {
+    document.getElementById('product-grid').innerHTML =
+      '<div class="empty"><div class="empty-icon">❌</div><p>Failed to load products.</p></div>';
+  }
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById('product-grid');
+  if (!products.length) { grid.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><p>No products found.</p></div>'; return; }
+  grid.innerHTML = products.map(p => `
+    <div class="card">
+      ${p.imageUrl ? `<img class="card-img" src="${p.imageUrl}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="card-img-placeholder" style="display:none">🛍️</div>` : `<div class="card-img-placeholder">🛍️</div>`}
+      <div class="card-body">
+        <div class="card-cat">${p.category || 'General'}</div>
+        <div class="card-name" title="${p.name}">${p.name}</div>
+        <div class="card-price">₹${p.price.toFixed(2)}</div>
+        <div class="card-stock ${p.stock > 0 ? 'in-stock' : 'out-stock'}">${p.stock > 0 ? '● In Stock' : '● Out of Stock'}</div>
+        <div class="card-actions">
+          <button class="btn-cart" onclick="addToCart(${p.id}, event)" ${p.stock === 0 ? 'disabled' : ''}>
+            ${p.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          </button>
+          <button class="btn-wish" onclick="addToWishlist(${p.id}, this)">❤️</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function addToCart(productId, e) {
+  e.stopPropagation();
+  if (!customerId) { 
+    alert('Please log in to add products to your cart.');
+    window.location.href = 'customer-login.html'; 
+    return; 
+  }
+  try {
+    const res = await fetch(`${API}/cart/add`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({ customerId: parseInt(customerId), productId, quantity: 1 })
+    });
+    if (!res.ok) throw new Error();
+    const cart = await res.json();
+    cartId = cart.id;
+    document.getElementById('cart-count').textContent = cart.cartItems.length;
+    showToast('✅ Added to cart!');
+  } catch { showToast('❌ Failed to add to cart'); }
+}
+
+async function addToWishlist(productId, btn) {
+  if (!customerId) { 
+    alert('Please log in to add products to your wishlist.');
+    window.location.href = 'customer-login.html'; 
+    return; 
+  }
+  try {
+    await fetch(`${API}/wishlist/add`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({ customerId: parseInt(customerId), productId })
+    });
+    btn.classList.toggle('active');
+    showToast('❤️ Added to wishlist!');
+  } catch { showToast('❌ Failed'); }
+}
+
+function handleSearch() {
+  const q = document.getElementById('search').value.toLowerCase();
+  renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q)));
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  stockOnly = false;
+  document.getElementById('stock-btn').classList.remove('active');
+  renderProducts(cat ? allProducts.filter(p => p.category === cat) : allProducts);
+}
+
+function filterPrice() {
+  const min = parseFloat(document.getElementById('min-price').value) || 0;
+  const max = parseFloat(document.getElementById('max-price').value) || Infinity;
+  renderProducts(allProducts.filter(p => p.price >= min && p.price <= max));
+}
+
+function toggleStock(btn) {
+  stockOnly = !stockOnly;
+  btn.classList.toggle('active', stockOnly);
+  renderProducts(stockOnly ? allProducts.filter(p => p.stock > 0) : allProducts);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function logout() { localStorage.clear(); window.location.href = 'customer-login.html'; }
+
+loadProducts();
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: rexmart-db
+    environment:
+      POSTGRES_DB: ecommerce_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+    container_name: rexmart-cache
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: ./ecommerce
+      dockerfile: Dockerfile
+    container_name: rexmart-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecommerce_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+    depends_on:
+      - db
+      - cache
+
+volumes:
+  postgres_data:

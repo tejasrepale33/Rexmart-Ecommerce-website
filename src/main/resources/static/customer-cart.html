@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rexmart – My Cart</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --green:#1db954;--green-dark:#158a3e;--green-light:#4ade80;
+  --gold:#c9a84c;--gold-light:#f5d67a;
+  --surface:#f7fdf9;--surface2:#edf7f1;
+  --glass:rgba(29,185,84,0.06);--glass-border:rgba(29,185,84,0.18);
+  --text:#0a1f0f;--muted:#4a7a5a;
+}
+body{
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(29,185,84,0.20) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(201,168,76,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 10%, rgba(29,185,84,0.12) 0%, transparent 40%),
+    #f0fdf4;
+  background-attachment:fixed;
+  font-family:'Inter',sans-serif;color:var(--text);min-height:100vh;
+}
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid rgba(29,185,84,0.15);
+  padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;
+  box-shadow:0 2px 16px rgba(29,185,84,0.08),inset 0 1px 0 rgba(255,255,255,0.90);
+}
+.nav-logo{
+  font-family:'Cinzel',serif;font-size:22px;
+  background:linear-gradient(135deg,var(--green-dark),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:3px;text-decoration:none;
+}
+.nav-links{display:flex;gap:8px;}
+.nav-btn{
+  padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;text-decoration:none;
+  border:1px solid rgba(29,185,84,0.20);
+  background:rgba(255,255,255,0.50);
+  color:var(--muted);font-family:'Inter',sans-serif;
+  backdrop-filter:blur(10px);
+}
+.nav-btn:hover{color:var(--text);border-color:var(--green);}
+.nav-btn-green{
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;border-color:transparent;
+  box-shadow:0 2px 12px rgba(29,185,84,0.25),inset 0 1px 0 rgba(255,255,255,0.20);
+}
+.page{max-width:900px;margin:0 auto;padding:40px 24px;}
+.page-title{
+  font-family:'Cinzel',serif;font-size:28px;
+  background:linear-gradient(135deg,var(--green-dark),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:28px;
+}
+.layout{display:grid;grid-template-columns:1fr 320px;gap:24px;}
+@media(max-width:700px){.layout{grid-template-columns:1fr;}}
+.cart-item{
+  background:rgba(255,255,255,0.55);
+  border:1px solid rgba(255,255,255,0.75);
+  border-radius:16px;padding:18px;display:flex;gap:16px;align-items:center;margin-bottom:14px;
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  box-shadow:0 4px 16px rgba(29,185,84,0.08),inset 0 1.5px 0 rgba(255,255,255,0.85);
+  transition:all 0.2s;
+}
+.cart-item:hover{border-color:rgba(29,185,84,0.35);box-shadow:0 8px 24px rgba(29,185,84,0.12);}
+.item-img{
+  width:72px;height:72px;border-radius:10px;object-fit:cover;
+  background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.item-info{flex:1;}
+.item-name{font-size:15px;font-weight:600;margin-bottom:4px;color:var(--text);}
+.item-price{font-size:14px;color:var(--gold);}
+.item-qty{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.qty-btn{
+  width:28px;height:28px;border-radius:8px;
+  border:1px solid rgba(29,185,84,0.20);
+  background:rgba(255,255,255,0.70);
+  color:var(--text);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+}
+.qty-btn:hover{border-color:var(--green);color:var(--green);}
+.qty-val{font-size:14px;font-weight:600;min-width:24px;text-align:center;color:var(--text);}
+.item-subtotal{font-size:16px;font-weight:700;color:var(--green);text-align:right;}
+.btn-remove{background:transparent;border:none;color:rgba(220,50,50,0.5);cursor:pointer;font-size:18px;padding:4px;transition:color 0.2s;}
+.btn-remove:hover{color:#e74c3c;}
+.summary{
+  background:rgba(255,255,255,0.55);
+  border:1px solid rgba(255,255,255,0.75);
+  border-radius:18px;padding:24px;height:fit-content;position:sticky;top:84px;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:0 4px 24px rgba(29,185,84,0.10),inset 0 1.5px 0 rgba(255,255,255,0.85);
+}
+.summary-title{
+  font-family:'Cinzel',serif;font-size:16px;color:var(--gold);
+  margin-bottom:20px;letter-spacing:1px;
+}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;color:var(--muted);}
+.summary-row.total{
+  font-size:18px;font-weight:700;color:var(--text);
+  border-top:1px solid rgba(29,185,84,0.15);padding-top:14px;margin-top:14px;
+}
+.btn-order{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;font-size:15px;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.3s;margin-top:16px;letter-spacing:0.5px;
+  box-shadow:0 4px 16px rgba(29,185,84,0.25),inset 0 1px 0 rgba(255,255,255,0.20);
+}
+.btn-order:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(29,185,84,0.35);}
+.btn-clear{
+  width:100%;padding:10px;border:1px solid rgba(220,50,50,0.25);
+  border-radius:12px;background:transparent;color:rgba(220,50,50,0.65);
+  font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:10px;
+}
+.btn-clear:hover{border-color:#e74c3c;color:#e74c3c;}
+.empty{text-align:center;padding:80px 20px;color:var(--muted);}
+.empty-icon{font-size:56px;margin-bottom:16px;}
+.btn-shop{
+  display:inline-block;padding:12px 28px;
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;border-radius:12px;text-decoration:none;font-weight:600;margin-top:16px;
+}
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:rgba(255,255,255,0.85);
+  border:1px solid var(--green);color:var(--text);
+  padding:14px 20px;border-radius:12px;font-size:14px;z-index:999;
+  transform:translateY(80px);opacity:0;transition:all 0.3s;
+  box-shadow:0 4px 20px rgba(29,185,84,0.15);
+  backdrop-filter:blur(12px);
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.address-section{
+  background:rgba(255,255,255,0.45);
+  border:1px solid rgba(29,185,84,0.20);
+  border-radius:14px;padding:16px;margin-bottom:16px;
+  backdrop-filter:blur(12px);
+}
+.address-section-title{font-size:13px;font-weight:600;color:var(--gold);margin-bottom:12px;}
+.address-option{
+  display:flex;align-items:flex-start;gap:10px;padding:10px;
+  border:1px solid rgba(29,185,84,0.15);border-radius:10px;margin-bottom:8px;
+  cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.40);
+}
+.address-option:hover{border-color:rgba(29,185,84,0.35);}
+.address-option.selected{border-color:var(--green);background:rgba(29,185,84,0.08);}
+.address-option input{margin-top:3px;accent-color:var(--green);}
+.address-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.btn-add-address{
+  width:100%;padding:9px;border:1px dashed rgba(29,185,84,0.30);
+  border-radius:10px;background:transparent;color:var(--muted);
+  font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:4px;
+}
+.btn-add-address:hover{border-color:var(--green);color:var(--green);}
+
+/* Payment Method */
+.payment-section{
+  background:rgba(255,255,255,0.45);
+  border:1px solid rgba(29,185,84,0.20);
+  border-radius:14px;padding:16px;margin-bottom:16px;
+  backdrop-filter:blur(12px);
+}
+.payment-section-title{font-size:13px;font-weight:600;color:var(--gold);margin-bottom:12px;}
+.payment-option{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  border:1px solid rgba(29,185,84,0.15);border-radius:10px;margin-bottom:8px;
+  cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.40);
+  user-select:none;
+}
+.payment-option:last-child{margin-bottom:0;}
+.payment-option:hover{border-color:rgba(29,185,84,0.35);}
+.payment-option.selected{border-color:var(--green);background:rgba(29,185,84,0.08);}
+.payment-option input[type=radio]{accent-color:var(--green);width:15px;height:15px;flex-shrink:0;}
+.payment-icon{font-size:20px;flex-shrink:0;}
+.payment-label{flex:1;}
+.payment-label strong{display:block;font-size:13px;font-weight:600;color:var(--text);}
+.payment-label span{font-size:11px;color:var(--muted);}
+.payment-badge{
+  font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;
+  background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid rgba(201,168,76,0.25);
+}
+
+/* Modals */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,31,15,0.55);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:rgba(255,255,255,0.90);
+  border:1px solid rgba(29,185,84,0.20);
+  border-radius:22px;padding:32px;width:100%;max-width:440px;
+  backdrop-filter:blur(24px);
+  box-shadow:0 16px 48px rgba(29,185,84,0.15);
+}
+.modal-title{
+  font-family:'Cinzel',serif;font-size:18px;
+  background:linear-gradient(135deg,var(--green-dark),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:20px;
+}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;color:var(--green-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.form-group input{
+  width:100%;padding:10px 14px;
+  background:rgba(255,255,255,0.80);
+  border:1px solid rgba(29,185,84,0.20);
+  border-radius:10px;color:var(--text);font-size:14px;
+  font-family:'Inter',sans-serif;outline:none;
+}
+.form-group input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(29,185,84,0.10);}
+.form-group input::placeholder{color:var(--muted);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-btns{display:flex;gap:10px;margin-top:16px;}
+.btn-save{
+  flex:1;padding:11px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+  box-shadow:0 4px 12px rgba(29,185,84,0.25);
+}
+.btn-cancel-modal{
+  flex:1;padding:11px;border:1px solid rgba(29,185,84,0.20);
+  border-radius:10px;background:transparent;color:var(--muted);
+  cursor:pointer;font-family:'Inter',sans-serif;
+}
+
+/* Success Modal */
+.success-modal{text-align:center;padding:40px 32px;}
+.success-icon{font-size:64px;margin-bottom:16px;animation:pop 0.4s ease;}
+@keyframes pop{0%{transform:scale(0.5);opacity:0;}80%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+.success-title{
+  font-family:'Cinzel',serif;font-size:22px;
+  background:linear-gradient(135deg,var(--green-dark),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;
+}
+.success-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
+.btn-view-orders{
+  display:inline-block;padding:13px 32px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#fff;font-size:14px;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;letter-spacing:0.5px;
+  box-shadow:0 4px 16px rgba(29,185,84,0.25);
+  text-decoration:none;
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="customer-home.html" class="nav-logo">👑 REXMART</a>
+  <div class="nav-links">
+    <a href="customer-home.html" class="nav-btn">← Shop</a>
+    <a href="customer-orders.html" class="nav-btn">My Orders</a>
+    <a href="customer-wishlist.html" class="nav-btn">❤️ Wishlist</a>
+    <button class="nav-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-title">🛒 My Cart</div>
+  <div id="empty-state" class="empty" style="display:none">
+    <div class="empty-icon">🛒</div>
+    <p>Your cart is empty</p>
+    <a href="customer-home.html" class="btn-shop">Start Shopping</a>
+  </div>
+  <div class="layout" id="cart-layout">
+    <div id="cart-items"></div>
+    <div class="summary">
+      <div class="summary-title">Order Summary</div>
+      <div class="summary-row"><span>Items</span><span id="item-count">0</span></div>
+      <div class="summary-row"><span>Subtotal</span><span id="subtotal">₹0.00</span></div>
+      <div class="summary-row"><span>Delivery</span><span style="color:var(--green)">Free</span></div>
+      <div class="summary-row total"><span>Total</span><span id="total" style="color:var(--gold)">₹0.00</span></div>
+
+      <!-- Delivery Address -->
+      <div class="address-section">
+        <div class="address-section-title">📍 Delivery Address</div>
+        <div id="address-list">
+          <div style="color:var(--muted);font-size:13px;">Loading addresses...</div>
+        </div>
+        <button class="btn-add-address" onclick="openAddressModal()">+ Add New Address</button>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="payment-section">
+        <div class="payment-section-title">💳 Payment Method</div>
+        <div class="payment-option selected" id="pay-cod" onclick="selectPayment('cod')">
+          <input type="radio" name="payment" checked/>
+          <span class="payment-icon">🏠</span>
+          <div class="payment-label">
+            <strong>Cash on Delivery</strong>
+            <span>Pay when your order arrives</span>
+          </div>
+        </div>
+        <div class="payment-option" id="pay-online" onclick="selectPayment('online')">
+          <input type="radio" name="payment"/>
+          <span class="payment-icon">⚡</span>
+          <div class="payment-label">
+            <strong>Pay Online</strong>
+            <span>UPI, Cards, Netbanking & more</span>
+          </div>
+          <span class="payment-badge">INSTANT</span>
+        </div>
+      </div>
+
+      <button class="btn-order" onclick="placeOrder()">Place Order 👑</button>
+      <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- Address Modal -->
+<div class="modal-overlay" id="address-modal">
+  <div class="modal">
+    <div class="modal-title">📍 Add Address</div>
+    <div class="form-group"><label>Street</label><input id="a-street" placeholder="123 Main St"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>City</label><input id="a-city" placeholder="Mumbai"/></div>
+      <div class="form-group"><label>State</label><input id="a-state" placeholder="Maharashtra"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Pincode</label><input id="a-pincode" placeholder="400001"/></div>
+      <div class="form-group"><label>Country</label><input id="a-country" placeholder="India"/></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel-modal" onclick="closeAddressModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAddress()">Save Address</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal success-modal">
+    <div class="success-icon" id="success-icon">🎉</div>
+    <div class="success-title" id="success-title">Order Placed!</div>
+    <div class="success-sub" id="success-sub">Your order has been placed successfully.</div>
+    <a href="customer-orders.html" class="btn-view-orders">View My Orders</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+const API = 'http://localhost:8080/api';
+// Global fetch interceptor to append JWT Bearer token
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options) {
+    options = options || {};
+    options.headers = options.headers || {};
+    const token = localStorage.getItem('jwtToken');
+    if (token && !url.includes('/api/auth/login') && !url.includes('/api/auth/register')) {
+      options.headers['Authorization'] = 'Bearer ' + token;
+    }
+    return originalFetch(url, options);
+  };
+})();
+const customerId = localStorage.getItem('customerId');
+const RAZORPAY_KEY = 'rzp_test_1DP5mmOlF5G5ag';
+let cart = null;
+let selectedAddressId = null;
+let selectedPayment = 'cod';
+
+if (!customerId) { window.location.href = 'customer-login.html'; }
+
+function selectPayment(method) {
+  selectedPayment = method;
+  document.getElementById('pay-cod').classList.toggle('selected', method === 'cod');
+  document.getElementById('pay-online').classList.toggle('selected', method === 'online');
+  document.querySelector('#pay-cod input').checked = method === 'cod';
+  document.querySelector('#pay-online input').checked = method === 'online';
+}
+
+async function loadCart() {
+  try {
+    const res = await fetch(`${API}/cart/customer/${customerId}`);
+    if (!res.ok) throw new Error();
+    cart = await res.json();
+    renderCart();
+  } catch {
+    document.getElementById('cart-layout').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'block';
+  }
+}
+
+function renderCart() {
+  if (!cart || !cart.cartItems || cart.cartItems.length === 0) {
+    document.getElementById('cart-layout').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'block';
+    return;
+  }
+  document.getElementById('cart-layout').style.display = 'grid';
+  document.getElementById('empty-state').style.display = 'none';
+  const items = cart.cartItems;
+  document.getElementById('cart-items').innerHTML = items.map(item => `
+    <div class="cart-item">
+      <div class="item-img">
+        ${item.productImageUrl
+          ? `<img src="${item.productImageUrl}" style="width:100%;height:100%;border-radius:10px;object-fit:cover;" onerror="this.parentElement.textContent='🛍️'"/>`
+          : '🛍️'}
+      </div>
+      <div class="item-info">
+        <div class="item-name">${item.productName}</div>
+        <div class="item-price">₹${item.productPrice.toFixed(2)} each</div>
+        <div class="item-qty">
+          <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity - 1})">−</button>
+          <span class="qty-val">${item.quantity}</span>
+          <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity + 1})">+</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+        <div class="item-subtotal">₹${item.subtotal.toFixed(2)}</div>
+        <button class="btn-remove" onclick="removeItem(${item.id})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('item-count').textContent = items.length;
+  document.getElementById('subtotal').textContent = '₹' + cart.totalPrice.toFixed(2);
+  document.getElementById('total').textContent = '₹' + cart.totalPrice.toFixed(2);
+  loadAddresses();
+}
+
+async function placeOrder() {
+  if (!cart || !cart.cartItems || cart.cartItems.length === 0) {
+    showToast('❌ Cart is empty'); return;
+  }
+  if (!selectedAddressId) {
+    showToast('❌ Please select a delivery address'); return;
+  }
+  if (selectedPayment === 'online') {
+    initiateRazorpay();
+  } else {
+    await placeCODOrder();
+  }
+}
+
+async function placeCODOrder() {
+  try {
+    const res = await fetch(`${API}/orders/place/${cart.id}?addressId=${selectedAddressId}`, { method: 'POST' });
+    if (!res.ok) throw new Error();
+    showSuccessModal('cod');
+  } catch { showToast('❌ Failed to place order'); }
+}
+
+function initiateRazorpay() {
+  const totalPaise = Math.round(cart.totalPrice * 100);
+  const customerName = localStorage.getItem('customerName') || 'Customer';
+  const customerEmail = localStorage.getItem('customerEmail') || '';
+  const customerPhone = localStorage.getItem('customerPhone') || '';
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: totalPaise,
+    currency: 'INR',
+    name: 'Rexmart',
+    description: `Order #${cart.id}`,
+    handler: async function(response) {
+      try {
+        const res = await fetch(`${API}/orders/place/${cart.id}?addressId=${selectedAddressId}`, { method: 'POST' });
+        if (!res.ok) throw new Error();
+        showSuccessModal('online', response.razorpay_payment_id);
+      } catch {
+        showToast('⚠️ Payment done but order failed. Contact support.');
+      }
+    },
+    prefill: { name: customerName, email: customerEmail, contact: customerPhone },
+    theme: { color: '#1db954' },
+    modal: { ondismiss: function() { showToast('ℹ️ Payment cancelled'); } }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function(response) {
+    showToast('❌ Payment failed: ' + response.error.description);
+  });
+  rzp.open();
+}
+
+function showSuccessModal(method, paymentId) {
+  const icon = document.getElementById('success-icon');
+  const title = document.getElementById('success-title');
+  const sub = document.getElementById('success-sub');
+  if (method === 'online') {
+    icon.textContent = '✅';
+    title.textContent = 'Payment Successful!';
+    sub.innerHTML = `Your payment was confirmed and order placed.<br/><small style="color:var(--muted);font-size:12px;">Payment ID: ${paymentId}</small>`;
+  } else {
+    icon.textContent = '🎉';
+    title.textContent = 'Order Placed!';
+    sub.textContent = 'Your order is confirmed. Pay cash when it arrives.';
+  }
+  document.getElementById('success-modal').classList.add('show');
+}
+
+async function loadAddresses() {
+  try {
+    const res = await fetch(`${API}/addresses/customer/${customerId}`);
+    const addresses = await res.json();
+    const list = document.getElementById('address-list');
+    if (!addresses.length) {
+      list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No addresses yet. Add one below.</div>';
+      return;
+    }
+    list.innerHTML = addresses.map(a => `
+      <div class="address-option ${selectedAddressId === a.id ? 'selected' : ''}" onclick="selectAddress(${a.id})">
+        <input type="radio" name="address" ${selectedAddressId === a.id ? 'checked' : ''}/>
+        <div class="address-text">
+          ${a.street}, ${a.city}<br/>
+          ${a.state} - ${a.pincode}, ${a.country}
+        </div>
+      </div>
+    `).join('');
+    if (!selectedAddressId && addresses.length) {
+      selectAddress(addresses[0].id);
+    }
+  } catch { console.error('Failed to load addresses'); }
+}
+
+function selectAddress(id) {
+  selectedAddressId = id;
+  loadAddresses();
+}
+
+function openAddressModal() { document.getElementById('address-modal').classList.add('show'); }
+function closeAddressModal() { document.getElementById('address-modal').classList.remove('show'); }
+
+async function saveAddress() {
+  const street = document.getElementById('a-street').value.trim();
+  const city = document.getElementById('a-city').value.trim();
+  const state = document.getElementById('a-state').value.trim();
+  const pincode = document.getElementById('a-pincode').value.trim();
+  const country = document.getElementById('a-country').value.trim();
+  if (!street || !city || !state || !pincode || !country) {
+    showToast('❌ Please fill all fields'); return;
+  }
+  try {
+    const res = await fetch(`${API}/addresses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ street, city, state, pincode, country, customerId: parseInt(customerId) })
+    });
+    if (!res.ok) throw new Error();
+    closeAddressModal();
+    showToast('✅ Address saved!');
+    loadAddresses();
+  } catch { showToast('❌ Failed to save address'); }
+}
+
+async function updateQty(itemId, qty) {
+  if (qty < 1) { await removeItem(itemId); return; }
+  try {
+    const res = await fetch(`${API}/cart/update/${itemId}?quantity=${qty}`, { method: 'PUT' });
+    if (!res.ok) throw new Error();
+    cart = await res.json();
+    renderCart();
+  } catch { showToast('❌ Failed to update quantity'); }
+}
+
+async function removeItem(itemId) {
+  try {
+    const res = await fetch(`${API}/cart/remove/${itemId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
+    showToast('🗑️ Item removed');
+    cart.cartItems = cart.cartItems.filter(i => i.id !== itemId);
+    cart.totalPrice = cart.cartItems.reduce((s, i) => s + i.subtotal, 0);
+    renderCart();
+  } catch { showToast('❌ Failed to remove item'); }
+}
+
+async function clearCart() {
+  if (!confirm('Clear entire cart?')) return;
+  try {
+    await fetch(`${API}/cart/clear/${customerId}`, { method: 'DELETE' });
+    showToast('🧹 Cart cleared');
+    loadCart();
+  } catch { showToast('❌ Failed to clear cart'); }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function logout() { localStorage.clear(); window.location.href = 'customer-login.html'; }
+
+loadCart();
+</script>
+</body>
+</html>
