@@ -72,6 +72,19 @@ tr:hover td{background:rgba(201,168,76,0.04);}
 
 <script>
 const API='http://localhost:8080/api';
+// Global fetch interceptor to append JWT Bearer token
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options) {
+    options = options || {};
+    options.headers = options.headers || {};
+    const token = localStorage.getItem('jwtToken');
+    if (token && !url.includes('/api/auth/login') && !url.includes('/api/auth/register')) {
+      options.headers['Authorization'] = 'Bearer ' + token;
+    }
+    return originalFetch(url, options);
+  };
+})();
 if(!localStorage.getItem('adminId')){window.location.href='admin-login.html';}
 let all=[];
 
